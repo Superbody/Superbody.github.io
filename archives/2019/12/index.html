@@ -6,11 +6,11 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Blog of Shunyu Yao</title>
+  <title>Archives: 2019/12 | Blog of Shunyu Yao</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
 <meta property="og:title" content="Blog of Shunyu Yao">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;index.html">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;archives&#x2F;2019&#x2F;12&#x2F;index.html">
 <meta property="og:site_name" content="Blog of Shunyu Yao">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
@@ -139,188 +139,47 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Optimization-algorithms" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
+  
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/12/27/Optimization-algorithms/">Optimization-algorithms</a>
-    </h1>
-  
-
-        
-        <a href="/2019/12/27/Optimization-algorithms/" class="archive-article-date">
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/12/27/Optimization-algorithms/" class="archive-article-date">
   	<time datetime="2019-12-27T02:54:54.256Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-12-27</time>
 </a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<p>title:Optimization algorithms<br>date:2019-11-11 20:10:33<br>author:Shunyu Yao<br>tags:[Deep Learning,Machine Learning]</p>
-<hr>
-<hr>
-<p>1- Optimization algorithms</p>
-<p>应用Machine learning是一项非常经验性（empirical）的过程，需要训练很多模型，然后找出效果最好的。因此，训练的速度够快是至关重要的。</p>
-<p>本周课程介绍几种加快Gradient descent的算法：</p>
-<ul>
-<li>mini-batch</li>
-<li>momentum</li>
-<li>RMSprop</li>
-<li>Adam</li>
-<li>Learning rate decay</li>
-</ul>
-<p>1-1 Mini-batch gradient descent</p>
-<ol>
-<li>Vectorization本身已经很大程度提升了gradient descent的速度，但之前介绍的是最基本的gradient descent算法（即batch gradient descent） <strong>要遍历所有m个数据样本才会做一次梯度下降</strong> 。随着m的增大，这个过程会很慢，一次梯度下降的成本变得很大。</li>
-<li>mini-batch gradient descent即针对上述问题，<strong>每次只使用少量的样本（即min-batch大小）去做迭代</strong>，计算梯度并更新参数。由于不少全量样本，<strong>计算的梯度不一定很准，即存在抖动（后面会通过其他算法解决抖动），但速度很快</strong> 。因此，同样是遍历了m个样本，min-batch算法可以拆分成多个批次，做到更多次梯度下降，达到更快的下降速度。</li>
-<li>引入标记：使用上标{i}表示拆分出的第i个批次。比如$ (X^{\{i\}})$ 表示第i个批次组成的数据集。如果一个批次的大小是1000，则每个批次的数据集$(X^{\{i\}})$ 的shape都是$((n_x, 1000))$ ， Y的shape是(1, 1000)（不考虑最后一个批次零头的情况）。</li>
-<li>mini-batch算法很简单：<ul>
-<li>先确定分多个batch，假如总的数据集大小是500万，分成5000个批去做，那么每个批处理1000个数据集。循环5000个批次：</li>
-<li>每个批次取出对应批次的1000条数据，在一个批次内，和传统的gradient descent没有差别，唯一就是输入的数据集不是全集，而一个批次。</li>
-</ul>
-</li>
-<li>epoch：当所有批次都循环完成了，即全部m个数据集都参与过了计算，这叫一个epoch。整个算法在epoch层还会做循环，迭代很多次epoch。</li>
-<li>在大数据下，基本上必然要采用min-batch gradient descent。</li>
-<li>相比而言，mini-batch gradient descent的迭代过程会比较震荡。</li>
-<li>不同mini-batch size（批次大小，即一个批次包含的样本数）的区别：<ul>
-<li>gradient descent可以认为是mini-batch size是m的mini-batch gradient descent。噪声较小，但一次下降的计算速度太慢。</li>
-<li>如果mini-batch size = 1，则每次只用一个样本做梯度下降，则变成 stochastic gradient descent （随机梯度下降）。噪声太大，且失去了vectorization加速。</li>
-<li>mini-batch和stochastic都存在噪声问题，且在local optima附近会徘徊。但设置合适大小的mini-batch size，噪声和徘徊问题可接受的范围内。</li>
-</ul>
-</li>
-<li>如何选择mini-batch size（这是一个hyperparameter）：<ul>
-<li>小数据量，比如总的样本只有几千个，完全可以直接用batch gradient descent</li>
-<li>大数量，mini-batch size倾向于选择$2^n$个，比如64, 128, 256等 </li>
-<li>mini-batch 与CPU/GPU memory的内存容量。</li>
-</ul>
-</li>
-</ol>
-<p>1-2 Exponentially weighted averages</p>
-<p>Exponentially weighted averages（指数加权平均），在统计学也称作Exponentially weighted moving averages（指数加权滑动平均）</p>
-<h3 id="Exponentially-weighted-averages概念举例："><a href="#Exponentially-weighted-averages概念举例：" class="headerlink" title="Exponentially weighted averages概念举例："></a>Exponentially weighted averages概念举例：</h3><p>下图蓝色点是伦敦某段时间每日温度值$\theta_t$，而红色是加权平均后的$(v_t)$，<br>具体的加权平均方法是：每天的温度值加权值$(v_t)$设置为前一天的温度加权值$(v_{t-1})$和当天的温度实际值$\theta_{t}$</p>
-<p>做加权平均：<br>$$<br>v_t = \beta v_{t-1} + (1-\beta) \theta_{t}<br>$$</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/12/27/Optimization-algorithms/">show all >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
         </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+    	 
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/11/24/hello-world/">Hello World</a>
+      <a class="archive-article-title" href="/2019/12/27/Optimization-algorithms/">Optimization-algorithms</a>
     </h1>
   
 
-        
-        <a href="/2019/11/24/hello-world/" class="archive-article-date">
-  	<time datetime="2019-11-24T08:13:52.534Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+        <div class="article-info info-on-right">
+          
+          
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/11/24/hello-world/">show all >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
   
   
+    </div></section>
+  
+
+    
 
 
           </div>
@@ -343,9 +202,9 @@
     <script>
 	var yiliaConfig = {
 		mathjax: false,
-		isHome: true,
+		isHome: false,
 		isPost: false,
-		isArchive: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: true,
