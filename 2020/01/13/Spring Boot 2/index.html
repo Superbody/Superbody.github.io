@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="Blog of Shunyu Yao">
 <meta property="og:description" content="配置文件 配置文件 全局的配置文件,文件名固定  application.properities  application.yml 配置文件的作用: 修改Spring Boot自动配置的默认值.">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2020-01-13T13:27:20.311Z">
+<meta property="og:updated_time" content="2020-01-13T13:45:56.595Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Blog of Shunyu Yao" type="application/atom+xml">
@@ -259,7 +259,9 @@
 <p> <strong>配置文件注入值数据校验</strong></p>
 </li>
 </ol>
-<pre><code><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Validated</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *&lt;bean&gt;</span></span><br><span class="line"><span class="comment">     *      &lt;property name="lastName" value="xxx /$&#123;key&#125;从环境变量，配置文件中获取/#&#123;SpEL&#125;"&gt;&lt;/&gt;</span></span><br><span class="line"><span class="comment">     *&lt;bean/&gt;</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"><span class="comment">//    @Value("$&#123;person.last-name&#125;")</span></span><br><span class="line">    <span class="meta">@Email</span></span><br><span class="line">    <span class="keyword">private</span> String lastName;</span><br></pre></td></tr></table></figure></code></pre><ol start="4">
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Validated</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;    </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *&lt;bean&gt;</span></span><br><span class="line"><span class="comment"> *      &lt;property name="lastName" value="xxx /$&#123;key&#125;从环境变量，配置文件中获取/#&#123;SpEL&#125;"&gt;&lt;/&gt;</span></span><br><span class="line"><span class="comment"> *&lt;bean/&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">//    @Value("$&#123;person.last-name&#125;")</span></span><br><span class="line"><span class="meta">@Email</span></span><br><span class="line"><span class="keyword">private</span> String lastName;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
 <li><h3 id="PropertySource-amp-ImportResource"><a href="#PropertySource-amp-ImportResource" class="headerlink" title="@PropertySource&amp;@ImportResource"></a>@PropertySource&amp;@ImportResource</h3><p> @PropertySource: 加载指定的配置文件 </p>
  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PropertySource</span>(value=&#123;<span class="string">"classpath:person.properties"</span>&#125;)</span><br></pre></td></tr></table></figure>
 
@@ -331,25 +333,23 @@
 <li><p>操作系统环境变量</p>
 </li>
 <li><p>RandomValuePropertySource配置的random.*属性值</p>
+<p> <strong>优先加载带profile,</strong></p>
+<p> <strong>由jar包外向jar包外寻找</strong></p>
+</li>
+<li><p><strong>jar包外部的application-{profile}.properties或application.yml(带spring.profile)配置文件</strong></p>
+</li>
+<li><p><strong>jar包内部的application-{profile}.properties或application.yml(带spring.profile)配置文件</strong></p>
+</li>
+<li><p><strong>jar包外部的application.properties或application.yml(带spring.profile)配置文件</strong></p>
+</li>
+<li><p><strong>jar包内部的application.properties或application.yml(带spring.profile)配置文件</strong></p>
+</li>
+<li><p>@Configuration注解类上的PropertySource</p>
+</li>
+<li><p>通过SpringApplication.setDefaultProperties指定的默认属性</p>
 </li>
 </ol>
 </li>
-</ol>
-<pre><code>    **优先加载带profile,**
-
-    **由jar包外向jar包外寻找**
-
-6. **jar包外部的application-{profile}.properties或application.yml(带spring.profile)配置文件**
-
-7. **jar包内部的application-{profile}.properties或application.yml(带spring.profile)配置文件**
-
-8. **jar包外部的application.properties或application.yml(带spring.profile)配置文件**
-
-9. **jar包内部的application.properties或application.yml(带spring.profile)配置文件**
-
-10. @Configuration注解类上的PropertySource
-
-11. 通过SpringApplication.setDefaultProperties指定的默认属性</code></pre><ol start="9">
 <li><h3 id="自动配置原理"><a href="#自动配置原理" class="headerlink" title="自动配置原理"></a>自动配置原理</h3><p> <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#appendix" target="_blank" rel="noopener">配置文件能配置的属性参照</a></p>
 <p> <strong>自动配置原理</strong></p>
 <ol>
@@ -374,27 +374,25 @@
 <p>根据当前不同的条件判断,决定这个配置类是否生效?</p>
 <p>一旦生效, 这个配置类就会给容器中添加各种组件, 这些组件的属性是从对应的properties中获取, 这些类里面的每一个属性又是可配置文件</p>
 </li>
-<li><p><em>我们能配置的属性都是来自于改属性的properties中*</em></p>
+<li><p><em>我们能配置的属性都是来自于改属性的properties中*</em><br>所有在配置文件中能配置的属性都是在xxxProperties类中封装着, 配置文件能配置什么就可以参照某个功能对应的这个属性类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">   <span class="meta">@ConfigurationProperties</span>(</span><br><span class="line">       prefix = &amp;quot;spring.http&amp;quot;</span><br><span class="line">   )<span class="comment">//从配置文件中获取指定的值和bean的属性进行绑定</span></span><br><span class="line">   <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpProperties</span> </span>&#123;</span><br><span class="line">       <span class="keyword">public</span> HttpProperties.<span class="function">Encoding <span class="title">getEncoding</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">this</span>.encoding;</span><br><span class="line">       &#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Encoding</span> </span>&#123;</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
 </li>
 </ol>
 </li>
 </ol>
-<pre><code>所有在配置文件中能配置的属性都是在xxxProperties类中封装着, 配置文件能配置什么就可以参照某个功能对应的这个属性类
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ConfigurationProperties</span>(</span><br><span class="line">    prefix = &amp;quot;spring.http&amp;quot;</span><br><span class="line">)<span class="comment">//从配置文件中获取指定的值和bean的属性进行绑定</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpProperties</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> HttpProperties.<span class="function">Encoding <span class="title">getEncoding</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.encoding;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Encoding</span> </span>&#123;</span><br></pre></td></tr></table></figure>
-
-精髓:
-
-1. SpringBoot启动会加载大量的自动配置类
-2. 我们看我们需要的功能有没有SpringBoot默认写好的自动配置类
-3. 我们再来看这个自动配置类中到底配置了哪些组件(只要我们要用的配置有, 我们就不需要再来配置了), 如果没, 我们就要自己写配置类
-4. 给容器中自动添加组件时,会从properties类中获取某些属性, 我们就可以在配置文件中指定这些属性的值
-
-xxxAutoConfiguration: 自动配置类, 给容器中添加组件
-
-xxxProperties: 封装配置文件中相关属性</code></pre><ol start="10">
+<p>​    精髓:</p>
+<ol>
+<li>SpringBoot启动会加载大量的自动配置类</li>
+<li>我们看我们需要的功能有没有SpringBoot默认写好的自动配置类</li>
+<li>我们再来看这个自动配置类中到底配置了哪些组件(只要我们要用的配置有, 我们就不需要再来配置了), 如果没, 我们就要自己写配置类</li>
+<li>给容器中自动添加组件时,会从properties类中获取某些属性, 我们就可以在配置文件中指定这些属性的值</li>
+</ol>
+<p>​    xxxAutoConfiguration: 自动配置类, 给容器中添加组件</p>
+<p>​    xxxProperties: 封装配置文件中相关属性</p>
+<ol start="10">
 <li><h3 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h3><ol>
 <li><p>@Conditional派生注解</p>
 <p> 作用: 必须是@Conditional成立才给容器中注入组件, 配置里面的配置才生效</p>
@@ -441,11 +439,7 @@ xxxProperties: 封装配置文件中相关属性</code></pre><ol start="10">
 <p> <strong>自动配置类必须在一定的条件下才能生效</strong></p>
 <p> 我们知道哪些自动配置类生效了</p>
 <p> debug=true#开启SpringBoot的debug(application.properties)</p>
- <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">============================</span><br><span class="line">CONDITIONS EVALUATION REPORT</span><br><span class="line">============================</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Positive matches:</span><br><span class="line">-----------------</span><br><span class="line"></span><br><span class="line">   AopAutoConfiguration matched:</span><br><span class="line">      - <span class="meta">@ConditionalOnProperty</span> (spring.aop.auto=<span class="keyword">true</span>) matched (OnPropertyCondition)</span><br><span class="line"></span><br><span class="line">   AopAutoConfiguration.ClassProxyingConfiguration matched:</span><br><span class="line">      - <span class="meta">@ConditionalOnMissingClass</span> did not find unwanted <span class="class"><span class="keyword">class</span> '<span class="title">org</span>.<span class="title">aspectj</span>.<span class="title">weaver</span>.<span class="title">Advice</span>' (<span class="title">OnClassCondition</span>)</span></span><br><span class="line"><span class="class">      - @<span class="title">ConditionalOnProperty</span> (<span class="title">spring</span>.<span class="title">aop</span>.<span class="title">proxy</span>-<span class="title">target</span>-<span class="title">class</span></span>=<span class="keyword">true</span>) matched (OnPropertyCondition)</span><br></pre></td></tr></table></figure>
-
-
-
-</li>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">============================</span><br><span class="line">CONDITIONS EVALUATION REPORT</span><br><span class="line">============================</span><br><span class="line">Positive matches:</span><br><span class="line">-----------------</span><br><span class="line">AopAutoConfiguration matched:</span><br><span class="line">- <span class="meta">@ConditionalOnProperty</span> (spring.aop.auto=<span class="keyword">true</span>) matched (OnPropertyCondition)</span><br><span class="line">AopAutoConfiguration.ClassProxyingConfiguration matched:</span><br><span class="line">- <span class="meta">@ConditionalOnMissingClass</span> did not find unwanted <span class="class"><span class="keyword">class</span> '<span class="title">org</span>.<span class="title">aspectj</span>.<span class="title">weaver</span>.<span class="title">Advice</span>' (<span class="title">OnClassCondition</span>)</span></span><br><span class="line"><span class="class">- @<span class="title">ConditionalOnProperty</span> (<span class="title">spring</span>.<span class="title">aop</span>.<span class="title">proxy</span>-<span class="title">target</span>-<span class="title">class</span></span>=<span class="keyword">true</span>) matched (OnPropertyCondition)</span><br></pre></td></tr></table></figure></li>
 </ol>
 </li>
 </ol>
@@ -610,19 +604,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">Web</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Spring Boot</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">Deep Learning</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Machine Learning</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color4">Web</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" target="_blank" rel="noopener" class="js-tag color2">Spring Boot</a>
               </li>
             
             <div class="clearfix"></div>
